@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PhotonPay光子易邮件签名生成器 - 视觉定制版</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body { background-color: #f8fafc; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -175,16 +176,25 @@
 
                     </div>
                 </div>
-
-                <div class="mt-6 flex flex-col items-center justify-center relative">
-                    <button id="btn-copy-signature" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 px-14 rounded-xl shadow-md hover:shadow-lg transition-all duration-150 transform active:scale-[0.99] flex items-center justify-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                        <span id="copy-btn-text">一键复制标准签名</span>
-                    </button>
-                    <p id="success-toast" class="mt-3 text-xs text-emerald-600 font-semibold opacity-0 transition-opacity duration-300 text-center">
+                <div class="mt-6 flex flex-col items-center justify-center gap-3">
+    <div class="flex gap-3 w-full sm:w-auto">
+        <button id="btn-copy-signature" class="flex-1 sm:flex-none bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 px-8 rounded-xl shadow-md hover:shadow-lg transition-all duration-150 flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+            <span id="copy-btn-text">一键复制标准签名</span>
+            <p id="success-toast" class="mt-3 text-xs text-emerald-600 font-semibold opacity-0 transition-opacity duration-300 text-center">
                         🎉 签名已完美复制！请直接前往【飞书邮箱客户端 -> 设置 -> 签名设置】中粘贴(Ctrl+V)应用。
                     </p>
-                </div>
+        </button>
+        <button id="btn-download-image" class="flex-1 sm:flex-none bg-slate-700 hover:bg-slate-800 text-white font-medium py-3 px-8 rounded-xl shadow-md hover:shadow-lg transition-all duration-150 flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            下载图片（飞书用）
+        </button>
+        <p id="success-toast" class="mt-3 text-xs text-emerald-600 font-semibold opacity-0 transition-opacity duration-300 text-center">
+                        🎉 签名已完美复制！请直接前往【飞书邮箱客户端 -> 设置 -> 签名设置】中粘贴(Ctrl+V)应用。
+                    </p>
+    </div>
+    <p id="success-toast" class="text-xs text-emerald-600 font-semibold opacity-0 transition-opacity duration-300 text-center"></p>
+</div>
             </div>
         </div>
 
@@ -369,7 +379,21 @@
             el.successToast.classList.replace('opacity-100', 'opacity-0');
         }, 3500);
     }
-
+document.getElementById('btn-download-image').addEventListener('click', function() {
+    const name = document.getElementById('input-name').value.trim() || 'signature';
+    html2canvas(document.getElementById('photonpay-final-signature'), {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = name + '-email-signature.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        document.getElementById('success-toast').classList.replace('opacity-0', 'opacity-100');
+        setTimeout(() => document.getElementById('success-toast').classList.replace('opacity-100', 'opacity-0'), 3500);
+    });
+});
     window.addEventListener('DOMContentLoaded', initApplication);
 </script>
 
