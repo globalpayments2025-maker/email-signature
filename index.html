@@ -318,7 +318,7 @@
                 await new Promise(r => requestAnimationFrame(r));
 
                 const canvas = await html2canvas(el.sigVisual, {
-                    scale: 2,
+                    scale: 3,
                     useCORS: true,
                     backgroundColor: '#ffffff',
                     logging: false,
@@ -328,7 +328,20 @@
 
                 const base64 = canvas.toDataURL('image/png');
 
-                const combinedHtml = `<a href="https://www.photonpay.com/hk?utm_source=Email-Signature" target="_blank" style="display:block;border:none;outline:none;text-decoration:none;"><img src="${base64}" style="max-width:620px;width:100%;display:block;border:none;margin:0;padding:0;" alt="PhotonPay Signature"></a><hr style="border:none;border-top:1px solid #e5e7eb;margin:6px 0 4px 0;padding:0;"><p style="font-size:10.5px;color:#9ca3af;line-height:1.6;font-family:sans-serif;margin:0;padding:0;">本邮件包含保密信息，若您并非收件人，请删除本邮件并通知发件人。未经授权，禁止使用、复制或披露本邮件全部或部分内容。<br>This email may contain confidential information. If you are not the intended recipient, please delete it and notify the sender. Unauthorized use, disclosure, or copying of this email or any part of it is strictly prohibited.</p>`;
+                const selectedCity = el.citySelect.value;
+                const mainlandCities = ["上海 Shanghai", "深圳 Shenzhen", "杭州 Hangzhou", "义乌 Yiwu", "广州 Guangzhou", "东莞 Dongguan"];
+                let sigLink;
+                if (selectedCity === "英国 UK") {
+                    sigLink = "https://www.photonpay.com/uk?utm_source=Email-Signature";
+                } else if (selectedCity === "加拿大 Canada") {
+                    sigLink = "https://www.photonpay.com/ca?utm_source=Email-Signature";
+                } else if (mainlandCities.includes(selectedCity)) {
+                    sigLink = "https://www.photonpay.com.cn/?utm_source=Email-Signature";
+                } else {
+                    sigLink = "https://www.photonpay.com/hk?utm_source=Email-Signature";
+                }
+
+                const combinedHtml = `<a href="${sigLink}" target="_blank" style="display:block;border:none;outline:none;text-decoration:none;"><img src="${base64}" style="max-width:620px;width:100%;display:block;border:none;margin:0;padding:0;" alt="PhotonPay Signature"></a><hr style="border:none;border-top:1px solid #e5e7eb;margin:6px 0 4px 0;padding:0;"><p style="font-size:10.5px;color:#9ca3af;line-height:1.6;font-family:sans-serif;margin:0;padding:0;">本邮件包含保密信息，若您并非收件人，请删除本邮件并通知发件人。未经授权，禁止使用、复制或披露本邮件全部或部分内容。<br>This email may contain confidential information. If you are not the intended recipient, please delete it and notify the sender. Unauthorized use, disclosure, or copying of this email or any part of it is strictly prohibited.</p>`;
 
                 await navigator.clipboard.write([new ClipboardItem({
                     'text/html': new Blob([combinedHtml], { type: 'text/html' })
